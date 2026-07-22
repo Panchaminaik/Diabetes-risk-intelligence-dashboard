@@ -131,8 +131,6 @@ diabetes-risk-intelligence-dashboard
 │   └── Demographic_Analysis.png
 │
 ├── Assets
-│   └── 
-│
 ├── README.md
 └── LICENSE
 ```
