@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Diabetes Risk Dashboard – Power BI Guide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a202c; }
+
+  .header { background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: white; padding: 32px 40px; }
+  .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .header p { font-size: 14px; opacity: 0.85; }
+
+  .nav { background: #2d3748; display: flex; gap: 0; overflow-x: auto; }
+  .nav button { background: none; border: none; color: #a0aec0; padding: 14px 20px; font-size: 13px; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .nav button.active, .nav button:hover { color: white; border-bottom-color: #63b3ed; background: #3a4a5c; }
+
+  .content { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .step-card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 24px; overflow: hidden; }
+  .step-header { display: flex; align-items: center; gap: 14px; padding: 18px 24px; background: #ebf8ff; border-left: 5px solid #3182ce; }
+  .step-num { background: #3182ce; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  .step-title { font-size: 17px; font-weight: 700; color: #1a365d; }
+  .step-body { padding: 20px 24px; }
+
+  .sub-section { margin-bottom: 20px; }
+  .sub-title { font-size: 14px; font-weight: 700; color: #2b6cb0; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #bee3f8; padding-bottom: 5px; }
+
+  code, .code-block { font-family: 'Courier New', monospace; }
+  .code-block { background: #1a202c; color: #e2e8f0; padding: 16px 20px; border-radius: 8px; font-size: 13px; line-height: 1.7; white-space: pre; overflow-x: auto; margin: 10px 0; }
+  .code-block .comment { color: #68d391; }
+  .code-block .keyword { color: #f6ad55; }
+  .code-block .string { color: #fc8181; }
+  .code-block .func { color: #76e4f7; }
+
+  .inline-code { background: #edf2f7; color: #c53030; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+  th { background: #2b6cb0; color: white; padding: 10px 14px; text-align: left; }
+  td { padding: 9px 14px; border-bottom: 1px solid #e2e8f0; }
+  tr:nth-child(even) td { background: #f7fafc; }
+  tr:hover td { background: #ebf8ff; }
+
+  .tip { background: #fffbeb; border-left: 4px solid #f6ad55; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 10px 0; font-size: 13px; }
+  .tip strong { color: #c05621; }
+  .info { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 10px 0; font-size: 13px; }
+  .warn { background: #fff5f5; border-left: 4px solid #e53e3e; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 10px 0; font-size: 13px; }
+
+  ul, ol { padding-left: 20px; }
+  li { margin-bottom: 7px; font-size: 14px; line-height: 1.6; }
+
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-right: 6px; }
+  .badge-blue { background: #bee3f8; color: #2b6cb0; }
+  .badge-green { background: #c6f6d5; color: #276749; }
+  .badge-red { background: #fed7d7; color: #c53030; }
+  .badge-orange { background: #feebc8; color: #c05621; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .mini-card { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; }
+  .mini-card h4 { font-size: 13px; color: #2b6cb0; margin-bottom: 8px; font-weight: 700; }
+  .mini-card p, .mini-card li { font-size: 13px; color: #4a5568; }
+
+  .progress-bar { display: flex; gap: 0; margin-bottom: 24px; background: white; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); overflow: hidden; }
+  .progress-step { flex: 1; padding: 12px; text-align: center; font-size: 12px; color: #718096; border-right: 1px solid #e2e8f0; cursor: pointer; }
+  .progress-step:last-child { border-right: none; }
+  .progress-step.done { background: #c6f6d5; color: #276749; }
+  .progress-step.current { background: #bee3f8; color: #2b6cb0; font-weight: 700; }
+
+  @media (max-width: 700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🩺 Diabetes Risk Intelligence Dashboard — Power BI Complete Guide</h1>
+  <p>Step-by-step: Data Processing → Data Model → DAX Measures → All 3 Dashboard Pages</p>
+</div>
+
+<div class="nav">
+  <button class="active" onclick="showPage('p0')">📋 Overview</button>
+  <button onclick="showPage('p1')">① Data Prep</button>
+  <button onclick="showPage('p2')">② Data Model</button>
+  <button onclick="showPage('p3')">③ DAX Measures</button>
+  <button onclick="showPage('p4')">④ Page 1: Executive</button>
+  <button onclick="showPage('p5')">⑤ Page 2: Risk</button>
+  <button onclick="showPage('p6')">⑥ Page 3: Demographics</button>
+  <button onclick="showPage('p7')">⑦ Formatting & Theme</button>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════════════════════ PAGE 0: OVERVIEW ═══════════════════════════════ -->
+<div id="p0" class="page active">
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">📊</div>
+      <div class="step-title">What You're Building & Your Dataset</div>
+    </div>
+    <div class="step-body">
+      <div class="sub-section">
+        <div class="sub-title">Dataset Columns (diabetes.csv — 10,000 rows)</div>
+        <table>
+          <tr><th>Column</th><th>Type</th><th>Used For</th></tr>
+          <tr><td><code>id</code></td><td>Integer</td><td>Row identifier</td></tr>
+          <tr><td><code>age</code></td><td>Integer</td><td>Age group analysis, heatmaps</td></tr>
+          <tr><td><code>gender</code></td><td>Text (Male/Female)</td><td>Gender comparison charts</td></tr>
+          <tr><td><code>bmi</code></td><td>Decimal</td><td>Obesity rate, scatter plot, heatmap</td></tr>
+          <tr><td><code>glucose</code></td><td>Integer</td><td>Avg glucose, risk segmentation, scatter</td></tr>
+          <tr><td><code>blood_pressure</code></td><td>Integer</td><td>Supporting metric</td></tr>
+          <tr><td><code>cholesterol</code></td><td>Integer</td><td>Supporting metric</td></tr>
+          <tr><td><code>physical_activity</code></td><td>Text (Low/Medium/High)</td><td>Lifestyle analysis</td></tr>
+          <tr><td><code>smoking</code></td><td>0/1 flag</td><td>Smoking impact score</td></tr>
+          <tr><td><code>family_history</code></td><td>0/1 flag</td><td>Family history risk KPI</td></tr>
+          <tr><td><code>stress_level</code></td><td>Integer</td><td>Supporting metric</td></tr>
+          <tr><td><code>steps_per_day</code></td><td>Integer</td><td>Activity analysis</td></tr>
+          <tr><td><code>insulin</code></td><td>Integer</td><td>Supporting metric</td></tr>
+          <tr><td><code>diabetes</code></td><td>0/1 flag</td><td>All KPIs, distributions, trends</td></tr>
+        </table>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">Build Order</div>
+        <div class="grid3">
+          <div class="mini-card"><h4>① Data Preparation</h4><p>Load CSV → clean → add calculated columns (Age Group, BMI Category, Risk Level, Date)</p></div>
+          <div class="mini-card"><h4>② Data Modelling</h4><p>Build star schema with fact table + dimension tables. Set relationships.</p></div>
+          <div class="mini-card"><h4>③ DAX Measures</h4><p>Write all KPI measures in a dedicated Measures table</p></div>
+          <div class="mini-card"><h4>④ Page 1 Build</h4><p>Executive Overview: 6 KPI cards, donut, gauge, trend bar chart</p></div>
+          <div class="mini-card"><h4>⑤ Page 2 Build</h4><p>Risk Analysis: 4 KPIs, scatter, heatmap, funnel, waterfall, line chart</p></div>
+          <div class="mini-card"><h4>⑥ Page 3 Build</h4><p>Demographics: 4 KPIs, bar+line, donut x3, residence chart</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 1: DATA PREP ═══════════════════════════════ -->
+<div id="p1" class="page">
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">1</div><div class="step-title">Load the CSV into Power BI</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Open <strong>Power BI Desktop</strong> → click <strong>Get Data → Text/CSV</strong></li>
+        <li>Browse to <strong>diabetes.csv</strong> → click <strong>Open</strong></li>
+        <li>In the preview dialog verify the first row is headers → click <strong>Transform Data</strong> (do NOT click Load yet)</li>
+        <li>Power Query Editor will open — this is where we do all cleaning</li>
+      </ol>
+      <div class="info">💡 Always use <strong>Transform Data</strong> first. Never just "Load" — you need to add calculated columns.</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">2</div><div class="step-title">Clean & Type-Cast Columns in Power Query</div></div>
+    <div class="step-body">
+      <div class="sub-section">
+        <div class="sub-title">Set Correct Data Types</div>
+        <p style="font-size:14px;margin-bottom:10px;">In Power Query, select each column header → right-click → <em>Change Type</em>:</p>
+        <table>
+          <tr><th>Column</th><th>Set Type To</th></tr>
+          <tr><td>id, age, glucose, blood_pressure, cholesterol, heart_rate, stress_level, steps_per_day, work_hours, insulin</td><td>Whole Number</td></tr>
+          <tr><td>bmi, sleep_hours, water_intake_ltr</td><td>Decimal Number</td></tr>
+          <tr><td>smoking, alcohol_intake, family_history, diabetes</td><td>Whole Number (keep as 0/1)</td></tr>
+          <tr><td>gender, physical_activity</td><td>Text</td></tr>
+        </table>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">Add a Simulated Date Column (for trend charts)</div>
+        <p style="font-size:14px;margin-bottom:8px;">The dataset doesn't have dates but the dashboard needs monthly trends (Jul 2023 – May 2024). We'll assign a date row-by-row.<br>In Power Query → <strong>Add Column → Custom Column</strong>. Name it <strong>Date</strong>:</p>
+        <div class="code-block"><span class="comment">// Custom Column formula — assigns dates cycling across 11 months</span>
+let
+    months = {
+        #date(2023,7,1), #date(2023,9,1), #date(2023,11,1),
+        #date(2024,1,1), #date(2024,3,1), #date(2024,5,1)
+    },
+    idx = Number.Mod([id] - 1, List.Count(months))
+in
+    months{idx}</div>
+        <p style="font-size:13px;margin-top:8px;">Change the type of the new <strong>Date</strong> column to <strong>Date</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">3</div><div class="step-title">Add Calculated Columns in Power Query</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:14px;">Go to <strong>Add Column → Custom Column</strong> for each of the following:</p>
+
+      <div class="sub-section">
+        <div class="sub-title">A. Age Group Column</div>
+        <div class="code-block"><span class="comment">// Column Name: AgeGroup</span>
+<span class="keyword">if</span> [age] >= 18 <span class="keyword">and</span> [age] <= 30 <span class="keyword">then</span> <span class="string">"18-30"</span>
+<span class="keyword">else if</span> [age] >= 31 <span class="keyword">and</span> [age] <= 45 <span class="keyword">then</span> <span class="string">"31-45"</span>
+<span class="keyword">else if</span> [age] >= 46 <span class="keyword">and</span> [age] <= 60 <span class="keyword">then</span> <span class="string">"46-60"</span>
+<span class="keyword">else</span> <span class="string">"61+"</span></div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-title">B. BMI Category Column</div>
+        <div class="code-block"><span class="comment">// Column Name: BMICategory</span>
+<span class="keyword">if</span> [bmi] < 18.5 <span class="keyword">then</span> <span class="string">"Underweight"</span>
+<span class="keyword">else if</span> [bmi] < 25 <span class="keyword">then</span> <span class="string">"Normal"</span>
+<span class="keyword">else if</span> [bmi] < 30 <span class="keyword">then</span> <span class="string">"Overweight"</span>
+<span class="keyword">else</span> <span class="string">"Obese"</span></div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-title">C. Risk Level Column (based on Glucose)</div>
+        <div class="code-block"><span class="comment">// Column Name: RiskLevel</span>
+<span class="keyword">if</span> [glucose] < 100 <span class="keyword">then</span> <span class="string">"Low Risk"</span>
+<span class="keyword">else if</span> [glucose] < 140 <span class="keyword">then</span> <span class="string">"Medium Risk"</span>
+<span class="keyword">else if</span> [glucose] < 180 <span class="keyword">then</span> <span class="string">"High Risk"</span>
+<span class="keyword">else</span> <span class="string">"Critical Risk"</span></div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-title">D. High Risk Flag Column</div>
+        <div class="code-block"><span class="comment">// Column Name: IsHighRisk</span>
+<span class="keyword">if</span> [glucose] > 180 <span class="keyword">and</span> [bmi] > 30 <span class="keyword">then</span> 1 <span class="keyword">else</span> 0</div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-title">E. Lifestyle Category (map physical_activity to 3 groups)</div>
+        <div class="code-block"><span class="comment">// Column Name: LifestyleGroup</span>
+<span class="keyword">if</span> [physical_activity] = <span class="string">"High"</span> <span class="keyword">then</span> <span class="string">"Active"</span>
+<span class="keyword">else if</span> [physical_activity] = <span class="string">"Medium"</span> <span class="keyword">then</span> <span class="string">"Moderate"</span>
+<span class="keyword">else</span> <span class="string">"Sedentary"</span></div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-title">F. Residence Column (Urban/Rural — simulate from id)</div>
+        <div class="code-block"><span class="comment">// Column Name: Residence</span>
+<span class="keyword">if</span> Number.Mod([id], 10) < 6 <span class="keyword">then</span> <span class="string">"Urban"</span> <span class="keyword">else</span> <span class="string">"Rural"</span></div>
+        <div class="tip"><strong>Why simulate?</strong> The dataset has no residence column. This 60/40 split matches the dashboard's 61.24%/38.76% distribution shown in the image.</div>
+      </div>
+
+      <p style="font-size:14px;margin-top:10px;">Click <strong>Close & Apply</strong> when done. Your table now has 20 columns.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════ PAGE 2: DATA MODEL ═══════════════════════════════ -->
+<div id="p2" class="page">
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">1</div><div class="step-title">Create a Date Dimension Table</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:12px;">Go to <strong>Home → New Table</strong> in the DAX editor and paste:</p>
+      <div class="code-block"><span class="comment">// Table Name: DimDate</span>
+DimDate = 
+<span class="func">ADDCOLUMNS</span>(
+    <span class="func">CALENDAR</span>(<span class="func">DATE</span>(2023, 1, 1), <span class="func">DATE</span>(2024, 12, 31)),
+    <span class="string">"Year"</span>,        <span class="func">YEAR</span>([Date]),
+    <span class="string">"Month"</span>,       <span class="func">MONTH</span>([Date]),
+    <span class="string">"MonthName"</span>,   <span class="func">FORMAT</span>([Date], <span class="string">"MMM YYYY"</span>),
+    <span class="string">"Quarter"</span>,     <span class="func">QUARTER</span>([Date]),
+    <span class="string">"MonthNum"</span>,    <span class="func">MONTH</span>([Date])
+)</div>
+      <div class="info">This gives you a proper calendar for time intelligence functions.</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">2</div><div class="step-title">Create Dimension Tables (Optional but Recommended)</div></div>
+    <div class="step-body">
+      <div class="sub-section">
+        <div class="sub-title">DimRiskLevel — for sorting Risk in the correct order</div>
+        <div class="code-block">DimRiskLevel = 
+<span class="func">DATATABLE</span>(
+    <span class="string">"RiskLevel"</span>,    STRING,
+    <span class="string">"RiskOrder"</span>,    INTEGER,
+    <span class="string">"RiskColor"</span>,    STRING,
+    {
+        { <span class="string">"Low Risk"</span>,      1, <span class="string">"#22C55E"</span> },
+        { <span class="string">"Medium Risk"</span>,   2, <span class="string">"#F59E0B"</span> },
+        { <span class="string">"High Risk"</span>,     3, <span class="string">"#F97316"</span> },
+        { <span class="string">"Critical Risk"</span>, 4, <span class="string">"#EF4444"</span> }
+    }
+)</div>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">DimAgeGroup — for correct sort order</div>
+        <div class="code-block">DimAgeGroup = 
+<span class="func">DATATABLE</span>(
+    <span class="string">"AgeGroup"</span>,   STRING,
+    <span class="string">"AgeOrder"</span>,   INTEGER,
+    {
+        { <span class="string">"18-30"</span>, 1 },
+        { <span class="string">"31-45"</span>, 2 },
+        { <span class="string">"46-60"</span>, 3 },
+        { <span class="string">"61+"</span>,   4 }
+    }
+)</div>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">DimBMICategory — for heatmap sort order</div>
+        <div class="code-block">DimBMICategory = 
+<span class="func">DATATABLE</span>(
+    <span class="string">"BMICategory"</span>,  STRING,
+    <span class="string">"BMIOrder"</span>,     INTEGER,
+    {
+        { <span class="string">"Underweight"</span>, 1 },
+        { <span class="string">"Normal"</span>,      2 },
+        { <span class="string">"Overweight"</span>,  3 },
+        { <span class="string">"Obese"</span>,       4 }
+    }
+)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">3</div><div class="step-title">Set Up Relationships (Model View)</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:12px;">Go to <strong>Model View</strong> (left icon panel). Drag to create these relationships:</p>
+      <table>
+        <tr><th>From Table</th><th>From Column</th><th>To Table</th><th>To Column</th><th>Cardinality</th></tr>
+        <tr><td>diabetes (fact)</td><td>Date</td><td>DimDate</td><td>Date</td><td>Many → One ✅</td></tr>
+        <tr><td>diabetes (fact)</td><td>AgeGroup</td><td>DimAgeGroup</td><td>AgeGroup</td><td>Many → One ✅</td></tr>
+        <tr><td>diabetes (fact)</td><td>RiskLevel</td><td>DimRiskLevel</td><td>RiskLevel</td><td>Many → One ✅</td></tr>
+        <tr><td>diabetes (fact)</td><td>BMICategory</td><td>DimBMICategory</td><td>BMICategory</td><td>Many → One ✅</td></tr>
+      </table>
+      <div class="tip"><strong>Sort columns:</strong> In DimRiskLevel, select the <em>RiskLevel</em> column → Column Tools → Sort by Column → RiskOrder. Repeat for AgeGroup/AgeOrder and BMICategory/BMIOrder.</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">4</div><div class="step-title">Create a Measures Table</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:10px;">Best practice is to keep all measures in one dedicated table:</p>
+      <ol>
+        <li>Go to <strong>Home → Enter Data</strong></li>
+        <li>Name it <strong>_Measures</strong> (the underscore keeps it at top of field list)</li>
+        <li>Add one dummy column (e.g., "x" = 1) → click Load</li>
+        <li>All your DAX measures will be created inside this table</li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════ PAGE 3: DAX ═══════════════════════════════ -->
+<div id="p3" class="page">
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">★</div><div class="step-title">All DAX Measures — Copy & Paste Each Into _Measures Table</div></div>
+    <div class="step-body">
+      <div class="info">To create a measure: Right-click <strong>_Measures</strong> table → <strong>New Measure</strong> → paste formula → Enter</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">A</div><div class="step-title">Page 1 — Executive Overview KPIs</div></div>
+    <div class="step-body">
+      <div class="code-block"><span class="comment">// ── KPI 1: Total Patients ──────────────────────────────────────</span>
+Total Patients = <span class="func">COUNTROWS</span>(diabetes)
+
+<span class="comment">// ── KPI 2: Diabetes Patients ───────────────────────────────────</span>
+Diabetes Patients = <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[diabetes] = 1)
+
+<span class="comment">// ── KPI 3: Diabetes Prevalence % ───────────────────────────────</span>
+Diabetes Prevalence % = 
+<span class="func">DIVIDE</span>([Diabetes Patients], [Total Patients], 0) * 100
+
+<span class="comment">// ── KPI 4: Average Glucose Level ───────────────────────────────</span>
+Avg Glucose = <span class="func">AVERAGE</span>(diabetes[glucose])
+
+<span class="comment">// ── KPI 5: Average BMI ─────────────────────────────────────────</span>
+Avg BMI = <span class="func">AVERAGE</span>(diabetes[bmi])
+
+<span class="comment">// ── KPI 6: High-Risk Patients ──────────────────────────────────</span>
+High Risk Patients = 
+<span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[IsHighRisk] = 1)
+
+High Risk % = 
+<span class="func">DIVIDE</span>([High Risk Patients], [Total Patients], 0) * 100</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">B</div><div class="step-title">Page 1 — Charts & Gauge</div></div>
+    <div class="step-body">
+      <div class="code-block"><span class="comment">// ── Gauge: Diabetes Risk Score (0-100 scale) ───────────────────</span>
+<span class="comment">// Score based on avg glucose normalized to 0-100</span>
+Diabetes Risk Score = 
+<span class="func">VAR</span> AvgGlucose = <span class="func">AVERAGE</span>(diabetes[glucose])
+<span class="func">VAR</span> MinG = 50
+<span class="func">VAR</span> MaxG = 300
+<span class="func">RETURN</span>
+    <span class="func">ROUND</span>((<span class="func">DIVIDE</span>(AvgGlucose - MinG, MaxG - MinG, 0)) * 100, 0)
+
+<span class="comment">// ── Trend Chart: Patients by Age Group ─────────────────────────</span>
+Patients by Age = <span class="func">COUNTROWS</span>(diabetes)
+
+Diabetes Prevalence by Age = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[diabetes] = 1),
+    <span class="func">COUNTROWS</span>(diabetes),
+    0
+) * 100</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">C</div><div class="step-title">Page 2 — Risk Analysis KPIs</div></div>
+    <div class="step-body">
+      <div class="code-block"><span class="comment">// ── KPI: High Glucose Rate (Glucose > 180) ─────────────────────</span>
+High Glucose Rate % = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[glucose] > 180),
+    [Total Patients],
+    0
+) * 100
+
+<span class="comment">// ── KPI: Obesity Rate (BMI > 30) ───────────────────────────────</span>
+Obesity Rate % = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[bmi] > 30),
+    [Total Patients],
+    0
+) * 100
+
+<span class="comment">// ── KPI: Family History Risk % ────────────────────────────────</span>
+Family History Risk % = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[family_history] = 1),
+    [Total Patients],
+    0
+) * 100
+
+<span class="comment">// ── KPI: Smoking Impact Score ──────────────────────────────────</span>
+<span class="comment">// Measures how much more diabetes prevalence smokers have vs non-smokers</span>
+Smoking Impact Score = 
+<span class="func">VAR</span> SmokerDiabetes = 
+    <span class="func">CALCULATE</span>(
+        <span class="func">DIVIDE</span>(<span class="func">COUNTROWS</span>(<span class="func">FILTER</span>(diabetes, diabetes[diabetes]=1 && diabetes[smoking]=1)),
+               <span class="func">COUNTROWS</span>(<span class="func">FILTER</span>(diabetes, diabetes[smoking]=1)), 0)
+    )
+<span class="func">VAR</span> NonSmokerDiabetes = 
+    <span class="func">CALCULATE</span>(
+        <span class="func">DIVIDE</span>(<span class="func">COUNTROWS</span>(<span class="func">FILTER</span>(diabetes, diabetes[diabetes]=1 && diabetes[smoking]=0)),
+               <span class="func">COUNTROWS</span>(<span class="func">FILTER</span>(diabetes, diabetes[smoking]=0)), 0)
+    )
+<span class="func">RETURN</span>
+    <span class="func">ROUND</span>((SmokerDiabetes - NonSmokerDiabetes) * 100, 2)</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">D</div><div class="step-title">Page 2 — Risk Segmentation & Waterfall</div></div>
+    <div class="step-body">
+      <div class="code-block"><span class="comment">// ── Risk Segments (for Funnel / Bar chart) ─────────────────────</span>
+Low Risk Count = 
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[RiskLevel] = <span class="string">"Low Risk"</span>)
+
+Medium Risk Count = 
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[RiskLevel] = <span class="string">"Medium Risk"</span>)
+
+High Risk Count = 
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[RiskLevel] = <span class="string">"High Risk"</span>)
+
+Critical Risk Count = 
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[RiskLevel] = <span class="string">"Critical Risk"</span>)
+
+<span class="comment">// ── Waterfall: Risk Factor Impact ──────────────────────────────</span>
+<span class="comment">// Base diabetes rate with NO risk factors</span>
+Base Diabetes Rate = 
+<span class="func">CALCULATE</span>(
+    <span class="func">DIVIDE</span>(<span class="func">COUNTROWS</span>(<span class="func">FILTER</span>(diabetes, diabetes[diabetes]=1)), <span class="func">COUNTROWS</span>(diabetes), 0),
+    diabetes[glucose] <= 140,
+    diabetes[bmi] <= 30,
+    diabetes[family_history] = 0,
+    diabetes[smoking] = 0
+) * 100
+
+<span class="comment">// Impact of High Glucose alone</span>
+High Glucose Impact = 
+<span class="func">CALCULATE</span>(
+    <span class="func">DIVIDE</span>(<span class="func">COUNTROWS</span>(<span class="func">FILTER</span>(diabetes, diabetes[diabetes]=1 && diabetes[glucose] > 140)),
+           <span class="func">COUNTROWS</span>(<span class="func">FILTER</span>(diabetes, diabetes[glucose] > 140)), 0)
+) * 100 - [Base Diabetes Rate]
+
+<span class="comment">// ── High-Risk Patients Over Time (line chart) ──────────────────</span>
+High Risk Over Time = 
+<span class="func">CALCULATE</span>([High Risk Patients])</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">E</div><div class="step-title">Page 3 — Demographics KPIs</div></div>
+    <div class="step-body">
+      <div class="code-block"><span class="comment">// ── KPI: Active Lifestyle % ────────────────────────────────────</span>
+Active Lifestyle % = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[LifestyleGroup] = <span class="string">"Active"</span>),
+    [Total Patients], 0
+) * 100
+
+<span class="comment">// ── KPI: Sedentary Lifestyle % ────────────────────────────────</span>
+Sedentary Lifestyle % = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[LifestyleGroup] = <span class="string">"Sedentary"</span>),
+    [Total Patients], 0
+) * 100
+
+<span class="comment">// ── KPI: Male Diabetes % ──────────────────────────────────────</span>
+Male Diabetes % = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[gender] = <span class="string">"Male"</span>, diabetes[diabetes] = 1),
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[gender] = <span class="string">"Male"</span>),
+    0
+) * 100
+
+<span class="comment">// ── KPI: Female Diabetes % ────────────────────────────────────</span>
+Female Diabetes % = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[gender] = <span class="string">"Female"</span>, diabetes[diabetes] = 1),
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[gender] = <span class="string">"Female"</span>),
+    0
+) * 100
+
+<span class="comment">// ── Physical Activity Combo Chart ─────────────────────────────</span>
+Patients by Lifestyle = <span class="func">COUNTROWS</span>(diabetes)
+
+Diabetes Rate by Lifestyle = 
+<span class="func">DIVIDE</span>(
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[diabetes] = 1),
+    <span class="func">COUNTROWS</span>(diabetes), 0
+) * 100
+
+<span class="comment">// ── Gender counts (for donut chart) ───────────────────────────</span>
+Male Patients = <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[gender] = <span class="string">"Male"</span>)
+Female Patients = <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[gender] = <span class="string">"Female"</span>)
+
+<span class="comment">// ── Family History (for donut chart) ──────────────────────────</span>
+With Family History = 
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[family_history] = 1)
+No Family History = 
+    <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[family_history] = 0)
+
+<span class="comment">// ── Residence (for donut chart) ───────────────────────────────</span>
+Urban Patients = <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[Residence] = <span class="string">"Urban"</span>)
+Rural Patients = <span class="func">CALCULATE</span>(<span class="func">COUNTROWS</span>(diabetes), diabetes[Residence] = <span class="string">"Rural"</span>)</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════ PAGE 4: PAGE 1 BUILD ═══════════════════════════════ -->
+<div id="p4" class="page">
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">1</div><div class="step-title">Setup Page 1 Canvas</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Right-click the page tab → <strong>Rename</strong> → <em>"Executive Overview"</em></li>
+        <li>Go to <strong>View → Page View → Actual Size</strong></li>
+        <li>In <strong>Format pane → Page</strong>: set Background to dark navy <span class="inline-code">#0A2342</span> or white depending on your theme</li>
+        <li>Add a <strong>Text Box</strong> at top: type "DIABETES RISK INTELLIGENCE DASHBOARD" → style it (bold, large, teal accent)</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">2</div><div class="step-title">6 KPI Cards — Row at Top</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:12px;">For each card: <strong>Visualizations pane → Card</strong>. Place 6 cards in a row.</p>
+      <table>
+        <tr><th>#</th><th>Card Title</th><th>Field / Measure</th><th>Format</th></tr>
+        <tr><td>1</td><td>Total Patients</td><td>[Total Patients]</td><td>Whole number</td></tr>
+        <tr><td>2</td><td>Diabetes Patients</td><td>[Diabetes Patients]</td><td>Whole number</td></tr>
+        <tr><td>3</td><td>Diabetes Prevalence %</td><td>[Diabetes Prevalence %]</td><td>0.00%</td></tr>
+        <tr><td>4</td><td>Average Glucose Level</td><td>[Avg Glucose]</td><td>0.00 mg/dL</td></tr>
+        <tr><td>5</td><td>Average BMI</td><td>[Avg BMI]</td><td>0.00 kg/m²</td></tr>
+        <tr><td>6</td><td>High-Risk Patients</td><td>[High Risk Patients]</td><td>Whole number</td></tr>
+      </table>
+      <div class="tip"><strong>Card formatting:</strong> In Format → Callout value: font size 28–36. Category label: 12pt. Add a colored background per card (match the dashboard icon colors).</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">3</div><div class="step-title">Donut Chart — Diabetes Distribution</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Donut Chart</strong> visual</li>
+        <li><strong>Legend</strong>: diabetes[diabetes] field (rename values: 0 = "No Diabetes", 1 = "Diabetes")</li>
+        <li><strong>Values</strong>: [Total Patients]</li>
+        <li><strong>Format:</strong>
+          <ul>
+            <li>Inner radius: 60%</li>
+            <li>Colors: Diabetes = <span class="inline-code">#3B82F6</span>, No Diabetes = <span class="inline-code">#10B981</span></li>
+            <li>Data labels: On, show "Percent of total" + value</li>
+            <li>Center label: Add a text box overlay with "27.72% Diabetes Prevalence"</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">4</div><div class="step-title">Gauge Chart — Diabetes Risk Score</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Gauge</strong> visual</li>
+        <li><strong>Value</strong>: [Diabetes Risk Score]</li>
+        <li><strong>Minimum value</strong>: 0 | <strong>Maximum value</strong>: 100 | <strong>Target</strong>: 50</li>
+        <li><strong>Format:</strong>
+          <ul>
+            <li>Gauge axis: Min=0, Max=100</li>
+            <li>Color ranges: 0-33 = Green, 34-66 = Yellow, 67-100 = Red (set under Data colors → Conditional formatting)</li>
+            <li>Callout value: Show the number (e.g., 72)</li>
+            <li>Add a text label "HIGH RISK" below in red</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">5</div><div class="step-title">Clustered Bar + Line Chart — Diabetes Trend by Age Group</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Line and Clustered Column Chart</strong></li>
+        <li><strong>X-Axis</strong>: DimAgeGroup[AgeGroup] (sorted by AgeOrder)</li>
+        <li><strong>Column Y-Axis</strong>: [Patients by Age]</li>
+        <li><strong>Line Y-Axis</strong>: [Diabetes Prevalence by Age]</li>
+        <li><strong>Format:</strong>
+          <ul>
+            <li>Column color: teal/blue gradient</li>
+            <li>Line: orange, width 2.5px, markers on</li>
+            <li>Data labels: On for both series</li>
+            <li>Y-axis: primary (patients count), secondary (prevalence %)</li>
+          </ul>
+        </li>
+      </ol>
+      <div class="info">This matches the "Diabetes Trend by Age Group" chart in the dashboard image showing bars for patient count and a % line.</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">6</div><div class="step-title">Executive Insights Cards</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;">Add 3 insight text boxes at the bottom of Page 1 with icons:</p>
+      <ul>
+        <li>Use <strong>Text Box</strong> or a <strong>Card</strong> with static text</li>
+        <li>Insight 1: "Diabetes prevalence is 27.72% among the screened population."</li>
+        <li>Insight 2: "High-risk patients (Glucose &gt;180 &amp; BMI &gt;30) are 2,317 (23.17%)."</li>
+        <li>Insight 3: "Patients aged 61+ show the highest diabetes prevalence (48.20%)."</li>
+        <li>Style: Light blue background, add icons using the <strong>Icon</strong> feature or emoji characters</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════ PAGE 5: PAGE 2 RISK ═══════════════════════════════ -->
+<div id="p5" class="page">
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">1</div><div class="step-title">4 KPI Cards — Risk Analysis Row</div></div>
+    <div class="step-body">
+      <table>
+        <tr><th>#</th><th>Card Title</th><th>Measure</th><th>Color</th></tr>
+        <tr><td>1</td><td>High Glucose Rate</td><td>[High Glucose Rate %]</td><td>Red</td></tr>
+        <tr><td>2</td><td>Obesity Rate</td><td>[Obesity Rate %]</td><td>Orange</td></tr>
+        <tr><td>3</td><td>Family History Risk</td><td>[Family History Risk %]</td><td>Purple</td></tr>
+        <tr><td>4</td><td>Smoking Impact Score</td><td>[Smoking Impact Score]</td><td>Teal</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">2</div><div class="step-title">Scatter Plot — Glucose vs BMI</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Scatter Chart</strong> visual</li>
+        <li><strong>X-Axis</strong>: diabetes[glucose]</li>
+        <li><strong>Y-Axis</strong>: diabetes[bmi]</li>
+        <li><strong>Legend</strong>: diabetes[diabetes] (rename 0=No, 1=Yes)</li>
+        <li><strong>Details</strong>: diabetes[id] (to plot individual points)</li>
+        <li><strong>Format:</strong>
+          <ul>
+            <li>Colors: Diabetes Yes = <span class="inline-code">#3B82F6</span>, No = <span class="inline-code">#10B981</span></li>
+            <li>Marker size: 3–4</li>
+            <li>X-axis title: "Glucose (mg/dL)" | Y-axis: "BMI (kg/m²)"</li>
+            <li>Add reference lines: X=180 (vertical dashed red), Y=30 (horizontal dashed orange)</li>
+          </ul>
+        </li>
+      </ol>
+      <div class="tip">To add reference lines: Format pane → X-Axis → Constant Line → Value=180 → color red dashed. Same for Y-axis at 30.</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">3</div><div class="step-title">Funnel/Bar Chart — Risk Segmentation</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:10px;">Power BI's built-in Funnel chart works well here. Alternatively use a stacked bar.</p>
+      <ol>
+        <li>Insert <strong>Funnel Chart</strong> visual</li>
+        <li><strong>Category</strong>: DimRiskLevel[RiskLevel] (sorted by RiskOrder descending for funnel shape)</li>
+        <li><strong>Values</strong>: [Total Patients] (it will filter per context)</li>
+        <li>Actually use a <strong>calculated table</strong> approach: Create a new table:
+        <div class="code-block">RiskSummary = 
+<span class="func">SUMMARIZE</span>(
+    diabetes,
+    diabetes[RiskLevel],
+    <span class="string">"PatientCount"</span>, <span class="func">COUNTROWS</span>(diabetes),
+    <span class="string">"Prevalence"</span>, <span class="func">DIVIDE</span>(<span class="func">COUNTROWS</span>(<span class="func">FILTER</span>(diabetes, diabetes[diabetes]=1)), <span class="func">COUNTROWS</span>(diabetes), 0) * 100
+)</div>
+        </li>
+        <li><strong>Funnel: Category</strong> = RiskSummary[RiskLevel], <strong>Values</strong> = RiskSummary[PatientCount]</li>
+        <li><strong>Colors</strong>: Critical=Red, High=Orange, Medium=Yellow, Low=Green</li>
+        <li>Add data labels showing count + % label on each bar</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">4</div><div class="step-title">Heatmap — Age Group vs BMI Category</div></div>
+    <div class="step-body">
+      <div class="warn">⚠️ Power BI has no native heatmap. Use one of these approaches:</div>
+      <div class="sub-section" style="margin-top:12px;">
+        <div class="sub-title">Option A: Matrix Visual (Recommended)</div>
+        <ol>
+          <li>Insert <strong>Matrix</strong> visual</li>
+          <li><strong>Rows</strong>: DimAgeGroup[AgeGroup]</li>
+          <li><strong>Columns</strong>: DimBMICategory[BMICategory]</li>
+          <li><strong>Values</strong>: [Total Patients]</li>
+          <li>Format → <strong>Cell elements → Background color → Conditional formatting → Color scale</strong></li>
+          <li>Set Min color = white, Max color = <span class="inline-code">#EF4444</span> (red)</li>
+          <li>This creates a heatmap effect with color intensity = patient count</li>
+        </ol>
+      </div>
+      <div class="sub-section">
+        <div class="sub-title">Option B: Download "Heatmap" from AppSource</div>
+        <ol>
+          <li>Visualizations pane → <strong>Get more visuals</strong> → Search "Heatmap"</li>
+          <li>Install <strong>"Heatmap by MAQ Software"</strong> (free)</li>
+          <li>Set X=BMICategory, Y=AgeGroup, Values=patient count</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">5</div><div class="step-title">Line Chart — High-Risk Patients Over Time</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Line Chart</strong></li>
+        <li><strong>X-Axis</strong>: DimDate[MonthName] (sorted by Month number)</li>
+        <li><strong>Y-Axis</strong>: [High Risk Over Time]</li>
+        <li>Format:
+          <ul>
+            <li>Line color: <span class="inline-code">#3B82F6</span>, width 3px</li>
+            <li>Markers: On</li>
+            <li>Data labels: On (shows count per month)</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">6</div><div class="step-title">Waterfall Chart — Risk Factor Impact</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Create a manual summary table using <strong>Enter Data</strong>:
+          <table style="margin-top:8px;">
+            <tr><th>Factor</th><th>Impact (%)</th><th>Type</th></tr>
+            <tr><td>High Glucose</td><td>+16.24</td><td>Increase</td></tr>
+            <tr><td>Obesity (BMI&gt;30)</td><td>+16.92</td><td>Increase</td></tr>
+            <tr><td>Family History</td><td>+9.35</td><td>Increase</td></tr>
+            <tr><td>Smoking</td><td>-4.36</td><td>Decrease</td></tr>
+            <tr><td>Total Impact</td><td>+40.06</td><td>Total</td></tr>
+          </table>
+          <div class="tip">You can calculate exact values using your DAX measures and update this table.</div>
+        </li>
+        <li>Insert <strong>Waterfall Chart</strong></li>
+        <li><strong>Category</strong>: Factor column | <strong>Y-Axis</strong>: Impact column | <strong>Breakdown</strong>: Type column</li>
+        <li>Format: Increase=Green, Decrease=Red, Total=Blue</li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════ PAGE 6: PAGE 3 DEMO ═══════════════════════════════ -->
+<div id="p6" class="page">
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">1</div><div class="step-title">4 KPI Cards — Demographics Row</div></div>
+    <div class="step-body">
+      <table>
+        <tr><th>#</th><th>Card Title</th><th>Measure</th></tr>
+        <tr><td>1</td><td>Active Lifestyle %</td><td>[Active Lifestyle %]</td></tr>
+        <tr><td>2</td><td>Sedentary Lifestyle %</td><td>[Sedentary Lifestyle %]</td></tr>
+        <tr><td>3</td><td>Male Diabetes %</td><td>[Male Diabetes %]</td></tr>
+        <tr><td>4</td><td>Female Diabetes %</td><td>[Female Diabetes %]</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">2</div><div class="step-title">Combo Chart — Physical Activity vs Diabetes Prevalence</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Line and Clustered Column Chart</strong></li>
+        <li><strong>X-Axis</strong>: diabetes[LifestyleGroup] (Active, Moderate, Sedentary)</li>
+        <li><strong>Column Y-Axis</strong>: [Patients by Lifestyle]</li>
+        <li><strong>Line Y-Axis</strong>: [Diabetes Rate by Lifestyle]</li>
+        <li>Format:
+          <ul>
+            <li>Bars: Blue/Teal gradient</li>
+            <li>Line: Green, markers on</li>
+            <li>Secondary Y-axis for the % line</li>
+            <li>Data labels on both</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">3</div><div class="step-title">Donut Chart — Diabetes Prevalence by Gender</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Donut Chart</strong></li>
+        <li><strong>Legend</strong>: diabetes[gender]</li>
+        <li><strong>Values</strong>: [Total Patients]</li>
+        <li>Colors: Male = <span class="inline-code">#3B82F6</span>, Female = <span class="inline-code">#EC4899</span></li>
+        <li>Data labels: show count + %</li>
+        <li>Add text box in center: "Male 5,359 / Female 4,641"</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">4</div><div class="step-title">Donut Chart — Family History Distribution</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Donut Chart</strong></li>
+        <li><strong>Legend</strong>: diabetes[family_history] (rename: 0 = "No Family History", 1 = "With Family History")</li>
+        <li><strong>Values</strong>: [Total Patients]</li>
+        <li>Colors: With Family History = <span class="inline-code">#10B981</span>, No = <span class="inline-code">#D1D5DB</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">5</div><div class="step-title">Donut Chart — Diabetes by Residence</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Insert <strong>Donut Chart</strong></li>
+        <li><strong>Legend</strong>: diabetes[Residence]</li>
+        <li><strong>Values</strong>: [Total Patients]</li>
+        <li>Colors: Urban = <span class="inline-code">#3B82F6</span>, Rural = <span class="inline-code">#10B981</span></li>
+        <li>Data labels: show count + %</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">6</div><div class="step-title">Key Takeaways Section</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:10px;">Add 4 insight cards at the bottom using Text Boxes or Card visuals with static text:</p>
+      <div class="grid2">
+        <div class="mini-card"><h4>Takeaway 1</h4><p>Sedentary lifestyle patients have highest diabetes prevalence (48.31%).</p></div>
+        <div class="mini-card"><h4>Takeaway 2</h4><p>Female diabetes prevalence (30.84%) is slightly higher than male (25.39%).</p></div>
+        <div class="mini-card"><h4>Takeaway 3</h4><p>More than 52% of diabetic patients have a family history.</p></div>
+        <div class="mini-card"><h4>Takeaway 4</h4><p>Urban population contributes to 61.24% of total cases.</p></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════ PAGE 7: FORMATTING ═══════════════════════════════ -->
+<div id="p7" class="page">
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">1</div><div class="step-title">Apply a Custom Theme (JSON)</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:10px;">Go to <strong>View → Themes → Browse for themes</strong> and load this JSON:</p>
+      <div class="code-block">{
+  <span class="string">"name"</span>: <span class="string">"DiabetesDashboard"</span>,
+  <span class="string">"dataColors"</span>: [
+    <span class="string">"#3B82F6"</span>, <span class="string">"#10B981"</span>, <span class="string">"#F59E0B"</span>,
+    <span class="string">"#EF4444"</span>, <span class="string">"#8B5CF6"</span>, <span class="string">"#EC4899"</span>,
+    <span class="string">"#06B6D4"</span>, <span class="string">"#F97316"</span>
+  ],
+  <span class="string">"background"</span>: <span class="string">"#FFFFFF"</span>,
+  <span class="string">"foreground"</span>: <span class="string">"#1A202C"</span>,
+  <span class="string">"tableAccent"</span>: <span class="string">"#3B82F6"</span>,
+  <span class="string">"visualStyles"</span>: {
+    <span class="string">"*"</span>: {
+      <span class="string">"*"</span>: {
+        <span class="string">"fontFamily"</span>: [{ <span class="string">"value"</span>: <span class="string">"Segoe UI"</span> }]
+      }
+    }
+  }
+}</div>
+      <p style="font-size:13px;margin-top:8px;">Save this as <strong>DiabetesDashboard.json</strong> and import it in Power BI.</p>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">2</div><div class="step-title">Navigation Sidebar (Left Panel)</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:10px;">The dashboard has a left navigation sidebar with icons. Build it like this:</p>
+      <ol>
+        <li>Insert a <strong>Rectangle</strong> shape on the far left (~120px wide, full height)</li>
+        <li>Fill: dark navy <span class="inline-code">#0A2342</span></li>
+        <li>Add <strong>Buttons</strong> (Insert → Buttons → Blank) for each page:
+          <ul>
+            <li>Button 1: "Executive Overview" — set Action = Page Navigation → Executive Overview</li>
+            <li>Button 2: "Risk Analysis" — Page Navigation → Risk Analysis</li>
+            <li>Button 3: "Demographics & Lifestyle" — Page Navigation → Demographics</li>
+          </ul>
+        </li>
+        <li>Add an icon image next to each button (download healthcare icons from flaticon.com)</li>
+        <li>For active button state: set Fill color to lighter blue <span class="inline-code">#1E3A5F</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">3</div><div class="step-title">Header Design</div></div>
+    <div class="step-body">
+      <ol>
+        <li>Add a <strong>Rectangle</strong> at the top: white background with thin bottom border</li>
+        <li>Add a <strong>Text Box</strong>: "DIABETES" in dark bold + "RISK" in teal bold + "INTELLIGENCE DASHBOARD" in dark regular</li>
+        <li>Add subtitle text: "Executive Overview of 10,000 Patients"</li>
+        <li>Add a <strong>Date Range card</strong> (top right): Insert → Text box → "Date Range: 1 Jan 2023 – 20 May 2024"</li>
+        <li>Add a calendar icon image next to the date</li>
+      </ol>
+      <div class="tip">Match the blue hexagon logo: download a medical hexagon SVG, insert as Image on the canvas.</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">4</div><div class="step-title">Page Title Badges</div></div>
+    <div class="step-body">
+      <p style="font-size:14px;margin-bottom:8px;">The dashboard image shows colored page title banners at the top of each page (e.g., "PAGE 1 – EXECUTIVE OVERVIEW"):</p>
+      <ol>
+        <li>Insert a <strong>Rectangle</strong> shape as a banner</li>
+        <li>Fill: teal gradient or the page color</li>
+        <li>Overlay with a <strong>Text Box</strong>: "PAGE 1 – EXECUTIVE OVERVIEW"</li>
+        <li>Font: white, bold, small caps, ~14px</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-header"><div class="step-num">5</div><div class="step-title">Final Checklist Before Publishing</div></div>
+    <div class="step-body">
+      <table>
+        <tr><th>Check</th><th>What to Verify</th></tr>
+        <tr><td>✅ Data types</td><td>All columns typed correctly in Power Query</td></tr>
+        <tr><td>✅ Relationships</td><td>All 4 relationships active in Model View</td></tr>
+        <tr><td>✅ Sort orders</td><td>AgeGroup, RiskLevel, BMICategory sorted correctly</td></tr>
+        <tr><td>✅ KPI totals</td><td>Compare card values to the dashboard image numbers</td></tr>
+        <tr><td>✅ Navigation</td><td>All 3 page nav buttons work</td></tr>
+        <tr><td>✅ Filters</td><td>Add a Date slicer (DimDate[Year]) if needed</td></tr>
+        <tr><td>✅ Mobile layout</td><td>View → Mobile layout (optional)</td></tr>
+        <tr><td>✅ Publish</td><td>File → Publish → Select your workspace</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- end content -->
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
