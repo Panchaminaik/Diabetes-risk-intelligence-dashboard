@@ -120,16 +120,18 @@ diabetes-risk-intelligence-dashboard
 │   └── diabetes.csv
 │
 ├── Documentation
-│   ├── Project_Documentation.pdf
-│   └── Dashboard_Guide.pdf
+│   ├── Diabetes_PowerBI_Guide.html
+│   └── Diabetes_Risk_Intelligence_Project_Documentation.pdf
+│   └── PowerBI_Dashboard_Interview_QA.pdf
 │
 ├── Images
+│   ├── Banner.png
 │   ├── Executive_Dashboard.png
 │   ├── Risk_Analysis.png
 │   └── Demographic_Analysis.png
 │
 ├── Assets
-│   └── Theme.json
+│   └── 
 │
 ├── README.md
 └── LICENSE
