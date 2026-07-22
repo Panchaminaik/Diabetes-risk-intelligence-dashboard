@@ -88,19 +88,25 @@ This project demonstrates the complete Power BI development lifecycle—from dat
 
 ## Executive Dashboard
 
-![Executive Dashboard](Images/Executive_Dashboard.png)
+<p align="center">
+  <img src="Images/Executive_Dashboard.png" width="900">
+</p>
 
 ---
 
 ## Risk Analysis
 
-![Risk Analysis](Images/Risk_Analysis.png)
+<p align="center">
+  <img src="Images/Risk_Analysis.png" width="900">
+</p>
 
 ---
 
 ## Demographic Analysis
 
-![Demographic Analysis](Images/Demographic_Analysis.png)
+<p align="center">
+  <img src="Images/Demographic_Analysis.png" width="900">
+</p>
 
 # 📂 Repository Structure
 
