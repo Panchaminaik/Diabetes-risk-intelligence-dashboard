@@ -88,29 +88,19 @@ This project demonstrates the complete Power BI development lifecycle—from dat
 
 ## Executive Dashboard
 
-> *(Add image here)*
-
-```markdown
 ![Executive Dashboard](Images/Executive_Dashboard.png)
-```
 
 ---
 
 ## Risk Analysis
 
-```markdown
 ![Risk Analysis](Images/Risk_Analysis.png)
-```
 
 ---
 
 ## Demographic Analysis
 
-```markdown
 ![Demographic Analysis](Images/Demographic_Analysis.png)
-```
-
----
 
 # 📂 Repository Structure
 
