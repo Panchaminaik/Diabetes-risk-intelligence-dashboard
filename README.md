@@ -1,86 +1,89 @@
 <p align="center">
   <img src="Images/Banner.png" alt="Diabetes Risk Intelligence Dashboard Banner" width="100%">
 </p>
-# 🩺 Diabetes Risk Intelligence Dashboard
 
-> **An end-to-end Business Intelligence project built with Power BI to analyze diabetes risk factors using interactive dashboards, DAX, and Power Query. The dashboard transforms healthcare data into actionable insights through KPI monitoring, demographic analysis, lifestyle trends, and risk assessment.**
+<h1 align="center">🩺 Diabetes Risk Intelligence Dashboard</h1>
+
+<p align="center">
+An end-to-end Business Intelligence project built with <strong>Power BI</strong> to analyze diabetes risk factors through interactive dashboards, DAX, and Power Query.
+</p>
+
+<p align="center">
+Transforming Healthcare Data into Actionable Insights for Better Decision-Making
+</p>
 
 ---
 
-## 📖 Project Overview
+# 📖 Project Overview
 
-The **Diabetes Risk Intelligence Dashboard** is an interactive healthcare analytics solution designed to help stakeholders understand diabetes prevalence, identify high-risk patients, and analyze the impact of demographic and lifestyle factors on diabetes risk.
+The **Diabetes Risk Intelligence Dashboard** is a comprehensive healthcare analytics project designed to identify diabetes trends, evaluate patient risk factors, and support data-driven healthcare decisions.
 
-This project demonstrates the complete Power BI development lifecycle—from data preparation and modeling to DAX calculations and interactive dashboard design.
+The dashboard combines demographic information, medical indicators, lifestyle habits, and health metrics into an interactive reporting solution that enables stakeholders to monitor diabetes prevalence, identify high-risk individuals, and understand the impact of different risk factors.
 
 ---
 
-## 🎯 Project Objectives
+# 🎯 Project Objectives
 
-- Analyze diabetes prevalence across different patient groups.
-- Identify high-risk patients using health indicators.
-- Monitor healthcare KPIs through interactive dashboards.
-- Compare demographic and lifestyle factors affecting diabetes.
-- Support data-driven healthcare decision-making.
+- Analyze diabetes prevalence across the population
+- Identify high-risk patients using healthcare indicators
+- Study the impact of lifestyle and demographic factors
+- Monitor obesity, glucose level, smoking, and family history
+- Support healthcare professionals with interactive visual analytics
+- Enable faster and more informed decision-making
 
 ---
 
 # 🛠️ Tech Stack
 
-| Category | Tools |
-|----------|-------|
-| BI Tool | Power BI |
-| Data Transformation | Power Query |
-| Data Modeling | Star Schema |
-| Language | DAX |
-| Data Source | CSV |
-| Supporting Tools | Microsoft Excel |
+| Technology | Purpose |
+|------------|---------|
+| Microsoft Power BI | Dashboard Development |
+| Power Query | Data Cleaning & Transformation |
+| DAX | Calculated Measures & KPIs |
+| Microsoft Excel / CSV | Dataset |
+| Data Visualization | Interactive Reports |
 
 ---
 
 # 📊 Dashboard Features
 
-### 📌 Executive Dashboard
-- Total Patients
-- Diabetes Patients
-- High Risk Patients
-- Diabetes Prevalence %
-- Average BMI
-- Average Glucose Level
+### Executive Dashboard
 
-### 📌 Risk Analysis
-- High Risk Score
-- BMI Distribution
-- Glucose Analysis
+- Overall Diabetes Prevalence
+- High-Risk Patient Monitoring
+- Risk Factor Analysis
+- Residence Distribution
+- Age Group Analysis
+
+### Risk Analysis Dashboard
+
 - Family History Impact
 - Smoking Impact
 - Obesity Analysis
+- Glucose Level Analysis
+- Risk Score Evaluation
 
-### 📌 Demographic Analysis
-- Gender Comparison
-- Age Group Analysis
-- Residence Analysis
-- Lifestyle Distribution
+### Demographic & Lifestyle Dashboard
 
-### 📌 Interactive Features
-- Dynamic Filters
-- Drill-through Analysis
-- KPI Cards
-- Interactive Charts
-- Custom Theme
+- Gender Analysis
+- Age Distribution
+- Physical Activity Analysis
+- Urban vs Rural Comparison
+- Lifestyle Insights
 
 ---
 
 # 📈 Key Performance Indicators (KPIs)
 
 - 👥 Total Patients
-- ⚠️ High Risk Patients
-- 💉 Diabetes Patients
+- 🩺 Diabetes Patients
 - 📊 Diabetes Prevalence %
-- ⚖️ Average BMI
-- 🩸 Average Glucose Level
-- 🚬 Smoking Impact
+- ⚠️ High Risk Patients
 - 🧬 Family History Impact
+- 🚬 Smoking Impact
+- ⚖️ Obesity Rate
+- 🩸 High Glucose Rate
+- 🏙️ Urban vs Rural Distribution
 
 ---
 
@@ -89,40 +92,52 @@ This project demonstrates the complete Power BI development lifecycle—from dat
 ## Executive Dashboard
 
 <p align="center">
-  <img src="Images/Executive_Dashboard.png" width="900">
+<img src="Images/Executive_Dashboard.png" width="100%">
 </p>
 
 ---
 
-## Risk Analysis
+## Risk Analysis Dashboard
 
 <p align="center">
-  <img src="Images/Risk_Analysis.png" width="900">
+<img src="Images/Risk_Analysis.png" width="100%">
 </p>
 
 ---
 
-## Demographic Analysis
+## Demographic & Lifestyle Dashboard
 
 <p align="center">
-  <img src="Images/Demographic_Analysis.png" width="900">
+<img src="Images/Demographic_Analysis.png" width="100%">
 </p>
+
+---
+
+# 📊 Business Insights
+
+- Nearly half of the analyzed population is affected by diabetes.
+- Family history is one of the strongest indicators of diabetes risk.
+- Smoking and obesity significantly increase diabetes risk.
+- Higher glucose levels strongly correlate with diabetes prevalence.
+- Lifestyle factors play an important role in patient health outcomes.
+- Urban and rural populations exhibit different diabetes trends.
+
+---
 
 # 📂 Repository Structure
 
 ```
-diabetes-risk-intelligence-dashboard
+Diabetes-risk-intelligence-dashboard
 │
 ├── Dashboard
-│   └── Diabetes_Risk_Intelligence.pbix
+│   └── Diabetes Risk Intelligence.pbix
 │
 ├── Dataset
 │   └── diabetes.csv
 │
 ├── Documentation
-│   ├── Diabetes_PowerBI_Guide.html
-│   └── Diabetes_Risk_Intelligence_Project_Documentation.pdf
-│   └── PowerBI_Dashboard_Interview_QA.pdf
+│   ├── Diabetes_Risk_Intelligence_Project_Documentation.pdf
+│   └── Dashboard_Guide.pdf
 │
 ├── Images
 │   ├── Banner.png
@@ -130,54 +145,53 @@ diabetes-risk-intelligence-dashboard
 │   ├── Risk_Analysis.png
 │   └── Demographic_Analysis.png
 │
-├── README.md
-└── LICENSE
+├── LICENSE
+└── README.md
 ```
 
 ---
 
-# 📊 Business Insights
+# 🚀 How to Use
 
-- Identified patients with elevated diabetes risk based on health indicators.
-- Analyzed the relationship between BMI, glucose levels, and diabetes prevalence.
-- Compared diabetes trends across gender, age groups, and residential areas.
-- Evaluated lifestyle factors influencing diabetes risk.
-- Built KPI-driven dashboards to support healthcare decision-making.
+1. Download the `.pbix` file from the **Dashboard** folder.
+2. Open the project using **Microsoft Power BI Desktop**.
+3. Load or refresh the dataset if required.
+4. Explore the interactive dashboards using filters and slicers.
 
 ---
 
 # 💼 Skills Demonstrated
 
+- Business Intelligence
+- Data Analytics
+- Healthcare Analytics
 - Data Cleaning
 - Data Transformation
 - Data Modeling
-- DAX Calculations
-- Power Query
-- KPI Development
 - Dashboard Design
 - Data Visualization
-- Business Intelligence
-- Healthcare Analytics
-- Storytelling with Data
+- DAX
+- Power Query
+- KPI Development
+- Interactive Reporting
 
 ---
 
-# 🚀 Future Enhancements
+# 📌 Future Enhancements
 
-- Predictive analytics using Machine Learning
-- Real-time data integration
-- Patient trend forecasting
-- Mobile-optimized dashboard
-- Advanced healthcare KPI monitoring
+- Predictive Machine Learning Model
+- Real-Time Healthcare Dashboard
+- SQL Database Integration
+- Power BI Service Deployment
+- Mobile Dashboard Optimization
+- Row-Level Security (RLS)
+- Automated Data Refresh
 
 ---
 
-# 📁 Dataset
+# 📜 License
 
-- **Format:** CSV
-- **Records:** 5,000+
-- **Domain:** Healthcare
-- **Purpose:** Educational & Portfolio Project
+This project is licensed under the MIT License.
 
 ---
 
@@ -185,12 +199,10 @@ diabetes-risk-intelligence-dashboard
 
 **Panchami Naik**
 
-Aspiring Data Analyst | Power BI Developer
+Aspiring Data Analyst passionate about Business Intelligence, Power BI, SQL, Excel, and Data Visualization.
 
-GitHub: https://github.com/panchaminaik
-
-Email: panchaminaik930@gmail.com
+⭐ If you found this project useful, consider giving it a **Star** on GitHub!
 
 ---
 
-## ⭐ If you found this project helpful, consider giving it a star!
+
