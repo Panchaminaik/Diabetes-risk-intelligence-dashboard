@@ -2,13 +2,7 @@
   <img src="Images/Banner.png" alt="Diabetes Risk Intelligence Dashboard Banner" width="100%">
 </p>
 # 🩺 Diabetes Risk Intelligence Dashboard
-![Power BI](https://img.shields.io/badge/Power%20BI-F2C811?logo=powerbi&logoColor=black)
 
-![DAX](https://img.shields.io/badge/DAX-02569B)
-
-![Healthcare](https://img.shields.io/badge/Domain-Healthcare-green)
-
-![Status](https://img.shields.io/badge/Status-Completed-success)
 > **An end-to-end Business Intelligence project built with Power BI to analyze diabetes risk factors using interactive dashboards, DAX, and Power Query. The dashboard transforms healthcare data into actionable insights through KPI monitoring, demographic analysis, lifestyle trends, and risk assessment.**
 
 ---
